@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+}
+
+body, html {
+  font-size: 1rem;
+  background-color: lightgrey;
+  background-image: url("../Images/pikachu-bg.jpg");
+  background-repeat: repeat;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  padding-left: 3px;
+  margin-right: 0;
+}
+
+label {
+  width: 110px;
+}
+
+label[for="viewSelect"], .w-fc {
+  width: fit-content;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.successPopup {
+  position: fixed;
+  display: none;
+  margin: 0;
+  bottom: 30px;
+  left: 30px;
+  z-index: 99999;
+  width: fit-content;
+} 
+
+#main {
+  min-width: 70%;
+}
+
+footer {
+  background-color: rgba(240, 240, 240, 0.9);
+  position: absolute;
+  bottom: 0;
+}
+
+footer div {
+  display: inline-block;
+}
+
+footer i {
+  margin-bottom: 1px;
+}
+
+#search {
+  width: 30%;
+}
+
+#tableBody {
+  background-color: lightgrey;
+}
+
+/* bootstrap overwrites */
+#userModalUsername {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+/* media queries */
+@media (max-width: 576px) {
+  .col-sm-center {
+    width: fit-content;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sm-mt-2 {
+    margin-top: .50rem;
+  }
+
+  .sm-float-start {
+    float: left!important;
+  }
+
+}
+
+/* preloader */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: #fff;
+}

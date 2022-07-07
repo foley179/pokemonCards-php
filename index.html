@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<title>Pokemon TC Tracker</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta author="Dan Marsh">
+  <link rel="icon" href="./Images/favicon.ico">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css" />
+  <!-- custom css -->
+  <link href="./css/styles.css" rel="stylesheet">
+
+</head>
+<body class="container-fluid g-0 row justify-content-center">
+  <!-- preloader -->
+  <!-- TODO: uncomment preloader -->
+  <!-- <div id="preloader" class="d-flex justify-content-center align-items-center">
+    <i class="fa-5x fa fa-circle-notch fa-spin"></i>
+  </div> -->
+  <!-- navbar -->
+  <nav class="navbar sticky-top mb-2 bg-dark shadow">
+    <div class="container-fluid g-2">
+      <div class="text-light d-none d-sm-block col-9 col-sm-4">
+        <span class="navbar-brand">PTC Tracker</span>
+      </div>
+      <!-- view Select -->
+      <div class="nav-item col-5 col-sm-3 sm-mt-2 float-end">
+        <div class="input-group w-fc float-end sm-float-start">
+          <select id="viewSelect" class="form-select">
+            <option value="cards">Cards</option>
+            <option value="users">Users</option>
+          </select>
+          <button id="addButton" class="btn btn-outline-secondary text-light fa fa-plus"></button>
+        </div>
+      </div>
+      <!-- search bar -->
+      <div class="d-flex col-7 col-sm-4 sm-mt-2">
+        <div class="input-group">
+          <input id="search" class="form-control ms-3" type="search" placeholder="Search" aria-label="Search">
+          <!-- search filter -->
+          <select class="form-select w-fc" id="searchFilter">
+            <option value="cardName">Name</option>
+            <option value="username">User</option>
+            <option value="cardSet">Set</option>
+            <option value="rarity">Rarity</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- main data -->
+	<main class="container col-auto">
+    <table class="table table-striped table-hover table-bordered">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+	</main>
+  <!-- success popup -->
+  <div class="alert alert-success successPopup shadow">
+    <b id="successInput"></b> <span id="successMessage"></span>
+  </div>
+  <!-- modals -->
+  <!-- user info/add -->
+  <div class="modal fade" id="userModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content" action="#">
+        <div class="modal-header">
+          <div class="modalHeader fw-bold fs-5"></div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="input-group mb-3">
+              <label for="userModalUsername" class="input-group-text">Username*</label>
+              <input class="form-control" type="text" id="userModalUsername" required>
+              <div id="userDupeError" class="text-danger d-none">This username already exists.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary saveButton">save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- user confirm modal -->
+  <!-- TODO: change any ref to employeeConfirmModal to userConfirmModal -->
+  <div class="modal fade" id="userConfirmModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="fw-bold fs-5">Confirm</div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <!-- TODO: change ref below -->
+            <p id="userConfirmOption"></p>
+            <p id="userConfirmUsername" class="fw-bold"></p>
+            <p>Are you sure?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- change ref below (2) -->
+          <button id="userConfirmYes" type="button" class="btn btn-success">Yes</button>
+          <button id="userConfirmNo" type="button" class="btn btn-danger">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- cards modal -->
+  <!-- TODO: change refs from dept to card: Modal, ModalDept, ModalLoc -->
+  <div class="modal fade" id="cardModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content" action="#">
+        <div class="modal-header">
+          <div class="modalHeader fw-bold fs-5"></div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="input-group mb-3">
+              <label for="cardModalUser" class="input-group-text">User*</label>
+              <select class="form-select" id="cardModalUser" type="text" required></select>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalName" class="input-group-text">Name*</label>
+              <!-- TODO: check refs to locSelect -->
+              <input class="form-control" id="cardModalName" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalSerial" class="input-group-text">Serial Code*</label>
+              <input class="form-control" id="cardModalSerial" type="text" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalHolo" class="input-group-text">Holo*</label>
+              <select class="form-select" id="cardModalHolo" required>
+                <option value="none">None</option>
+                <option value="holo">Holo</option>
+                <option value="reverse">Reverse</option>
+              </select>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalSet" class="input-group-text">Set*</label>
+              <input class="form-control" id="cardModalSet" type="text" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalSubset" class="input-group-text">Subset*</label>
+              <input class="form-control" id="cardModalSubset" type="text" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalRarity" class="input-group-text">Rarity*</label>
+              <input class="form-control" id="cardModalRarity" type="text" required>
+            </div>
+            <div class="input-group mb-3">
+              <label for="cardModalImgCode" class="input-group-text">Image Code</label>
+              <input class="form-control" id="cardModalImgCode" type="text">
+            </div>
+            <!-- TODO: sort a fixed size for this -->
+            <div class="container" id="imgContainer"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary saveButton">save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- card confirm modal -->
+  <!-- TODO: change refs from dept to card: Modal, ModalDept, ModalLoc  -->
+  <div class="modal fade" id="cardConfirmModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="fw-bold fs-5">Confirm</div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <p><b id="cardConfirmUser"></b> <span id="cardConfirmOption"></span></p>
+            <b id="cardConfirmName"></b><br>
+            <b id="cardConfirmSerial"></b><br>
+            <b id="cardConfirmHolo"></b><br>
+            <b id="cardConfirmSet"></b><br>
+            <b id="cardConfirmSubset"></b><br>
+            <b id="cardConfirmRarity"></b><br>
+            <b id="cardConfirmImgCode"></b><br>
+            <p>Are you sure?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- TODO: change dept refs (2) -->
+          <button id="cardConfirmYes" type="button" class="btn btn-success">Yes</button>
+          <button id="cardConfirmNo" type="button" class="btn btn-danger">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- delete confirm modal -->
+  <div class="modal fade" id="deleteConfirmModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="fw-bold fs-5">Confirm</div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <p>Are you sure you want to delete <b id="deleteConfirmOption"></b>?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="deleteConfirmYes" type="button" class="btn btn-success">Yes</button>
+          <button id="deleteConfirmNo" type="button" class="btn btn-danger">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- error modal -->
+  <div class="modal fade" id="errorInfo">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="fw-bold fs-5">Error</div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <p class="errorDiv text-danger"></p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- info modal (shows on page load) -->
+  <div class="modal fade" id="infoModal">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="fw-bold display-6">Welcome</div>
+          <button type="button" class="btn-close btn-secondary" data-bs-dismiss="modal" aria-label="close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <p>
+              This is a small site designed to keep track of cards you want to trade/sell.
+              <br><br>
+              Please make sure you have created a user first, I advise using your discord names to help keep track of who to message about the card. 
+              once your user is created you can then create a record of the card you 
+              want to trade. On the "create new" and "edit" pages you will see  a box for "image code" to get this go to 
+              <a target="_blank" href="https://pokemontcg.guru/advanced">Pokemon tcg guru</a> and used the advanced search to find the card you want to trade, 
+              then in the address bar you will see something like "pokemontcg.guru/card/pikachu-pop/<strong>pop4-13</strong>", the last part in bold 
+              is the code you want. This code will allow an image to be available on a cards "Details" page.
+              <br>
+              This page will be availabe from the <i class="fa fa-circle-info"></i> button at the bottom of the page.
+              <br><br>
+              Lastly the search bar is for the cards page, it will automatically send you there once you start typing.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="container footer py-2 px-3">
+    <i class="btn btn-sm btn-dark fa fa-circle-info me-2" id="infoButton"></i>
+    <div>Pokemon Trading Card Tracker - 2022</div>
+  </footer>
+  
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <!-- bootstrap, jquery, font awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/9c8244ade2.js" crossorigin="anonymous"></script>
+  <!-- custom js -->
+  <script type="application/javascript" src="./js/script.js"></script>
+  
+</body>
+</html>
