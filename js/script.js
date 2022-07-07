@@ -28,6 +28,8 @@ function clearModal() { // clearing modals
   $("#userModalUsername").attr("data-id", "");
   $("#userDupeError").addClass("d-none");
 
+  $("#imgContainer").empty();
+
   // clear delete modals data
   $("#deleteConfirmModal").attr("data-id", "");
   $("#deleteConfirmModal").attr("data-type", "");
@@ -182,7 +184,7 @@ function search() {
 $(window).on("load", () => {
   
   // main sites info modal on load
-  $("#infoModal").modal("show");
+  // $("#infoModal").modal("show");
 
   // preloader on page load
   if ($("#preloader").length) {
@@ -1000,6 +1002,13 @@ function ajaxGetById(view, id) { // get card/user by id
         
         } else {
           // if (view == "cards")
+
+          // ajax call to populate image if not null
+          if (data.imgCode) {
+            ajaxGetImage(data.imgCode);
+          }
+
+          // disable user select
           $("#cardModalUser").attr("disabled", "true");
 
           let cardId = data.id;
@@ -1030,6 +1039,41 @@ function ajaxGetById(view, id) { // get card/user by id
           $("#cardModal").modal("show");
           
         }
+
+      } else {
+        // if status = error
+        $(".errorDiv").html(`An error occured, please try again.<br>${result.status.description}`);
+        $("#errorInfo").modal("show");
+      }
+    },
+    error: (error) => {
+      console.log(error.responseText);
+    }
+
+  });
+}
+
+function ajaxGetImage(imgCode) { // get card image
+  // console.log(imgCode); // test
+  
+  $.ajax({
+    url: "php/getImage.php",
+    type: "POST",
+    dataType: "json",
+    data: {id: imgCode},
+    success: (result) => {
+
+      if (result.status.name == "ok") {
+        
+        // console.log(result.data); // test
+
+        let data = result.data.small.replace("\\", "");
+        // TODO: have imgContainer have .d-none, remove if img works
+        $("#imgContainer").append(
+          $("<img>", {
+            src: data
+          })
+        )
 
       } else {
         // if status = error
