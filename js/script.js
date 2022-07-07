@@ -1,14 +1,4 @@
 //----- helper funcs
-function compare(a, b, prop) { // a sort function for data to be in ordered alphabetically
-  if (a[prop] < b[prop]) {
-    return -1;
-  }
-  if (a[prop] > b[prop]) {
-    return 1;
-  }
-  return 0;
-} // TODO: check this is used
-
 function isAllTrue(arr) { // for checking full arr == true
   return arr.every(element => element === true);
 }
@@ -31,9 +21,9 @@ function clearModal() { // clearing modals
   $("#cardModalSubset").val("");
   $("#cardModalRarity").val("");
   $("#cardModalImgCode").val("");
-  $("#cardModalUser").val("na").change(); // TODO: make sure user select has this default
+  $("#cardModalUser").val("").change();
+  $("#cardModalUser").removeAttr("disabled");
 
-  // TODO: make sure card and user id are being passed correctly
   $("#cardModalName").attr("data-id", ""); 
   $("#userModalUsername").attr("data-id", "");
   $("#userDupeError").addClass("d-none");
@@ -60,8 +50,6 @@ function createMainTable(view, data) { // create and populate main table
 
   // console.log(`main table test ${view} - ${data[0].cardName}`); // test
 
-  // TODO: disable ability to change user on edit page
-
   if (view == "cards") {
 
     for (const row of data) {
@@ -76,7 +64,6 @@ function createMainTable(view, data) { // create and populate main table
         "rarity": "rare",
         "imgCode": "" } */
 
-      // TODO: populate this with correct info
       $("#tableBody").append(
 
         $("<tr>", {
@@ -195,7 +182,7 @@ function search() {
 $(window).on("load", () => {
   
   // main sites info modal on load
-  // $("#infoModal").modal("show"); TODO: uncomment
+  $("#infoModal").modal("show");
 
   // preloader on page load
   if ($("#preloader").length) {
@@ -209,7 +196,7 @@ $(window).on("load", () => {
 $(() => {
   // on initial load
   ajaxGetAll();
-  ajaxPopulateSelect(); // TODO: check this works
+  ajaxPopulateSelect();
 })
 
 // general
@@ -245,6 +232,7 @@ $("#infoButton").on("click", () => {
 $("#tableBody").on("click", ".editButton", function() {
 
   let view = $("#viewSelect option:selected").val();
+
   // console.log(view); // test
   $(".saveButton").attr("data-method", "edit");
   $(".modalHeader").text(`Edit ${view}`);
@@ -255,15 +243,7 @@ $("#tableBody").on("click", ".editButton", function() {
   // console.log(id); // test
 
   // ajax call will populate modal
-  if (view == "users") {
-
-    ajaxGetById(view, id);
-
-  } else if (view == "cards") {
-
-    ajaxGetById(view, id);
-
-  } // TODO: check why this is not one line?
+  ajaxGetById(view, id);
 
 })
 
@@ -324,7 +304,7 @@ $("#viewSelect").on("change", () => {
   } else {
     // if (view == "users")
 
-    ajaxGetAllUsers(); // TODO: change func name from dept
+    ajaxGetAllUsers();
 
   }
 })
@@ -401,7 +381,7 @@ $("#userConfirmYes").on("click", () => {
 })
 
 $("#userConfirmNo").on("click", () => {
-  // for add employee
+  // for add user
   $("#userConfirmModal").modal("hide");
   $("#userModal").modal("show");
 })
@@ -548,7 +528,7 @@ $("#searchFilter").on("change", () => {
 function ajaxPopulateSelect() { // populate user select
 
   $.ajax({
-    url: "php/getAllUsers.php", // TODO: check this works then delete populateSelect.php
+    url: "php/getAllUsers.php",
     type: "POST",
     dataType: "json",
     success: (result) => {
@@ -574,7 +554,6 @@ function ajaxPopulateSelect() { // populate user select
         $("#cardModalUser").val("na").change();
 
         for (const user of result.data) {
-          // getting one of each loc and dept for options below
           
           $("#cardModalUser").append(
             $("<option>", {
@@ -632,7 +611,7 @@ function ajaxGetAllUsers() { // populate table with user data
   $("#search").val("");
 
   $.ajax({
-    url: "php/getAllUsers.php", // TODO: change file
+    url: "php/getAllUsers.php",
     type: "POST",
     dataType: "json",
     success: (result) => {
@@ -668,7 +647,7 @@ function ajaxAddCard() { // add card
   // console.log([userId, cardName, serial, holo, cardSet, subset, rarity, imageCode]); // test
 
   $.ajax({
-    url: "php/insertCard.php", // TODO: change file
+    url: "php/insertCard.php",
     type: "POST",
     dataType: "json",
     data: {userId, cardName, serialCode, holo, cardSet, subset, rarity, imageCode},
@@ -678,7 +657,7 @@ function ajaxAddCard() { // add card
         
         // console.log(result.data); // test
 
-        // re-call getAllDepts and populateSelects to update page
+        // re-call getAll to update page
         ajaxGetAll();
         
         successPopup(cardName, "successfully added.");
@@ -771,7 +750,7 @@ function ajaxDeleteUserById(userId, user) { // delete user by id
   // console.log([userId, user]); // test
 
   $.ajax({
-    url: "php/deleteUserByID.php", // TODO: change file
+    url: "php/deleteUserByID.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -781,7 +760,7 @@ function ajaxDeleteUserById(userId, user) { // delete user by id
 
       if (result.status.name == "ok") {
         
-        // console.log(`emp ${empId} deleted`); // test
+        // console.log(`user ${userId} deleted`); // test
 
         // re-call getAllUsers and populateSelect to update table
         ajaxGetAllUsers();
@@ -1021,6 +1000,7 @@ function ajaxGetById(view, id) { // get card/user by id
         
         } else {
           // if (view == "cards")
+          $("#cardModalUser").attr("disabled", "true");
 
           let cardId = data.id;
           let cardName = data.cardName;
