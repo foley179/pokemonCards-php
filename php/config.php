@@ -2,14 +2,14 @@
 
 	// connection details for MySQL database
 
-	$cd_host = "127.0.0.1";
-	$cd_port = 3306;
+	$cd_host = "";
+	$cd_port = 0;
 	$cd_socket = "";
 
 	// database name, username and password
 
 	$cd_dbname = "pokemontracker";
-	$cd_user = "admin";
-	$cd_password = "evilangel83";
+	$cd_user = "";
+	$cd_password = "";
 
 ?>
